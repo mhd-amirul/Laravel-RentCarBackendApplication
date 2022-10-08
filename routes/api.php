@@ -26,10 +26,12 @@ Route::group([], function ()
         Route::post('signin',[authentikasiController::class, 'login']);
     }
 );
-Route::group(['middleware' => 'auth:sanctum', 'prefix' => 'profile'], function ()
-    {
-        Route::post('/',[profileController::class, 'profil']);
-        Route::put('edit',[profileController::class, 'edit']);
-        Route::put('resetpass',[profileController::class, 'resetPassword']);
-    }
-);
+Route::middleware(['auth:sanctum', 'emailVerified'])->group(function () {
+    Route::group(['prefix' => 'profile'], function ()
+        {
+            Route::post('/',[profileController::class, 'profil']);
+            Route::put('edit',[profileController::class, 'edit']);
+            Route::put('resetpass',[profileController::class, 'resetPassword']);
+        }
+    );
+});
