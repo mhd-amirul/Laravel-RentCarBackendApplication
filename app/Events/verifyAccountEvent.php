@@ -2,7 +2,6 @@
 
 namespace App\Events;
 
-use App\Models\User;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
@@ -17,7 +16,7 @@ class verifyAccountEvent
      *
      * @return void
      */
-    public function __construct(User $user)
+    public function __construct($user)
     {
         return $this->user = $user;
     }
