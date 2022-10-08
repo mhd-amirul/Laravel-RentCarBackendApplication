@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers\auth;
 
+use App\Events\verifyAccountEvent;
 use App\Http\Controllers\Controller;
+use App\Models\otpCode;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -12,14 +14,13 @@ class authentikasiController extends Controller
 {
     public function register(Request $request)
     {
-        $data = $request->all();
-        $val = Validator::make($data,
+        $user = $request->all();
+        $val = Validator::make($user,
             [
                 'first_name' => 'required',
                 'last_name' => 'required',
                 'email' => 'required|email|unique:users',
                 'no_hp' => 'required|min:3|unique:users',
-                // 'slug' => 'required|unique:users',
                 'password' => 'required|min:5',
                 'confirmpassword' => 'required|same:password',
             ]
@@ -31,8 +32,17 @@ class authentikasiController extends Controller
                 'massage' => $val->errors()
             ]);
         }
-        $data['password'] = Hash::make($data['password']);
-        $user = User::create($data);
+
+        $user['password'] = Hash::make($user['password']);
+        User::create($user);
+        $otp['otp'] = rand(0001, 9999);
+        otpCode::create($otp);
+
+        // Massage For Gmail
+        $user['subject'] = 'Verification code';
+        $user['otp'] = $otp['otp'];
+
+        verifyAccountEvent::dispatch($user);
         return response()->json(
             [
                 'data' => $user,
@@ -74,5 +84,10 @@ class authentikasiController extends Controller
                 'user_info' => $user,
             ]
         ], 200);
+    }
+
+    public function verifyEmail(Request $request)
+    {
+        # code...
     }
 }
