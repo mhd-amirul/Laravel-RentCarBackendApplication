@@ -2,9 +2,7 @@
 
 namespace App\Mail;
 
-use App\Models\User;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 
@@ -18,7 +16,7 @@ class sendOtp extends Mailable
      *
      * @return void
      */
-    public function __construct(User $user)
+    public function __construct($user)
     {
         return $this->user = $user;
     }
@@ -32,7 +30,7 @@ class sendOtp extends Mailable
     {
         return $this->from('danwe371@gmail.com', 'Muhammad Amirul')
                     ->subject($this->user['subject'])
-                    ->view('emails.index')
+                    ->view('email.index')
                     ->with('user', $this->user);
     }
 }
