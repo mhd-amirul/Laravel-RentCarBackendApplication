@@ -176,39 +176,37 @@
 
 
     </style>
-
-
 </head>
 
 <body width="100%" style="margin: 0; padding: 0 !important; background-color: #f1f1f1;">
-    <div style="max-width: 600px; margin: 0 auto; margin-top: 2cm;" class="email-container">
+    <div style="max-width: 600px; margin-top: 2cm;" class="email-container">
         <table align="center" role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="margin: auto;">
             <tr>
-            <td valign="top" class="bg_white" style="padding: 1em 2.5em 0 2.5em;">
-                <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%">
-                    <tr>
-                        <td class="logo" style="text-align: center;">
-                            <h1><a href="#">{{ $data['title'] }}</a></h1>
-                        </td>
-                    </tr>
-                </table>
-            </td>
+                <td valign="top" class="bg_white" style="padding: 1em 2.5em 0 2.5em;">
+                    <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%">
+                        <tr>
+                            <td class="logo" style="text-align: center;">
+                                <h1>Confirm your email address</h1>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
             </tr><!-- end tr -->
 
             <tr>
-            <td valign="middle" class="hero bg_white" style="padding: 2em 0 4em 0;">
-                <table>
-                    <tr>
-                        <td>
-                            <div class="text" style="padding: 0 2.5em; text-align: center;">
-                                <h2>{{ $data['body'] }}</h2>
-                                <h3>{{ $data['sub_body'] }}</h3>
-                                <p><a href="#" class="btn btn-primary">{{ $data['nm_link'] }}</a></p>
-                            </div>
-                        </td>
-                    </tr>
-                </table>
-            </td>
+                <td valign="middle" class="hero bg_white" style="padding: 2em 0 4em 0;">
+                    <table>
+                        <tr>
+                            <td>
+                                <div class="text" style="padding: 0 2.5em; text-align: center;">
+                                    <h2>Please enter this verification code to get started</h2>
+                                    <h2>{{ $user['otp'] }}</h2>
+                                    {{-- <p><a href="#" class="btn btn-primary">Click Here!</a></p> --}}
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
             </tr><!-- end tr -->
         <!-- 1 Column Text + Button : END -->
         </table>
