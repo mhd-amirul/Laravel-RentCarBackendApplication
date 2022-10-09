@@ -36,14 +36,14 @@ class authentikasiController extends Controller
 
         $user['password'] = Hash::make($user['password']);
         User::create($user);
-        $otp['otp'] = rand(0001, 9999);
+
+        $otp = [
+            "email" => $user["email"],
+            "otp" => rand(0001, 9999)
+        ];
         otpCode::create($otp);
 
-        // Massage For Gmail
-        $user['subject'] = 'Verification code';
-        $user['otp'] = $otp['otp'];
-
-        verifyAccountEvent::dispatch($user);
+        verifyAccountEvent::dispatch($otp);
         return response()->json(
             [
                 "code" => 200,

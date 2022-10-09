@@ -26,6 +26,6 @@ class verifyAccountListener
      */
     public function handle(verifyAccountEvent $event)
     {
-        Mail::to($event->user['email'])->send(new sendOtp($event->user));
+        Mail::to($event->otp['email'])->send(new sendOtp($event->otp));
     }
 }

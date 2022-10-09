@@ -10,15 +10,15 @@ class sendOtp extends Mailable
 {
     use Queueable, SerializesModels;
 
-    public $user;
+    public $otp;
     /**
      * Create a new message instance.
      *
      * @return void
      */
-    public function __construct($user)
+    public function __construct($otp)
     {
-        return $this->user = $user;
+        return $this->otp = $otp;
     }
 
     /**
@@ -29,8 +29,8 @@ class sendOtp extends Mailable
     public function build()
     {
         return $this->from('danwe371@gmail.com', 'Muhammad Amirul')
-                    ->subject($this->user['subject'])
+                    ->subject('Verification code')
                     ->view('email.index')
-                    ->with('user', $this->user);
+                    ->with('user', $this->otp);
     }
 }

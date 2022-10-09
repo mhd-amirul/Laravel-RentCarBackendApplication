@@ -10,14 +10,14 @@ class verifyAccountEvent
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    public $user;
+    public $otp;
     /**
      * Create a new event instance.
      *
      * @return void
      */
-    public function __construct($user)
+    public function __construct($otp)
     {
-        return $this->user = $user;
+        return $this->otp = $otp;
     }
 }
