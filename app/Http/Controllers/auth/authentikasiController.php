@@ -28,9 +28,10 @@ class authentikasiController extends Controller
 
         if ($val->fails()) {
             return response()->json([
-                'status' => 'failed',
-                'massage' => $val->errors()
-            ]);
+                "code" => 400,
+                "status" => "BAD_REQUEST",
+                "massage" => $val->errors()
+            ], 400);
         }
 
         $user['password'] = Hash::make($user['password']);
@@ -45,9 +46,15 @@ class authentikasiController extends Controller
         verifyAccountEvent::dispatch($user);
         return response()->json(
             [
-                'data' => $user,
-                'status' => 'success',
-                'message' => 'Sign Up Succesfully'
+                "code" => 200,
+                "status" => "OK",
+                "message" => "Sign Up Succesfully",
+                "data" => [
+                    "first_name" => $user["first_name"],
+                    "last_name" => $user["last_name"],
+                    "email" => $user["email"],
+                    "no_hp" => $user["no_hp"],
+                ],
             ], 200);
     }
 
