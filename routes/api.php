@@ -24,6 +24,7 @@ Route::group([], function ()
     {
         Route::post('signup',[authentikasiController::class, 'register']);
         Route::post('signin',[authentikasiController::class, 'login']);
+        Route::post('verify',[authentikasiController::class, 'verifyEmail']);
     }
 );
 Route::middleware(['auth:sanctum', 'emailVerified'])->group(function () {
