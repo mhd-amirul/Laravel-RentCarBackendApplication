@@ -6,6 +6,7 @@ use App\Events\verifyAccountEvent;
 use App\Http\Controllers\Controller;
 use App\Models\otpCode;
 use App\Models\User;
+use DateTime;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
@@ -17,12 +18,12 @@ class authentikasiController extends Controller
         $user = $request->all();
         $val = Validator::make($user,
             [
-                'first_name' => 'required',
-                'last_name' => 'required',
-                'email' => 'required|email|unique:users',
-                'no_hp' => 'required|min:3|unique:users',
-                'password' => 'required|min:5',
-                'confirmpassword' => 'required|same:password',
+                "first_name" => "required",
+                "last_name" => "required",
+                "email" => "required|email|unique:users",
+                "no_hp" => "required|min:3|unique:users",
+                "password" => "required|min:5",
+                "confirmpassword" => "required|same:password",
             ]
         );
 
@@ -30,16 +31,16 @@ class authentikasiController extends Controller
             return response()->json([
                 "code" => 400,
                 "status" => "BAD_REQUEST",
-                "massage" => $val->errors()
+                "message" => $val->errors()
             ], 400);
         }
 
-        $user['password'] = Hash::make($user['password']);
+        $user["password"] = Hash::make($user["password"]);
         User::create($user);
 
         $otp = [
             "email" => $user["email"],
-            "otp" => rand(0001, 9999)
+            "otp" => rand(1000, 9999)
         ];
         otpCode::create($otp);
 
@@ -62,39 +63,44 @@ class authentikasiController extends Controller
     {
         $val = validator::make($request->all(),
             [
-                'email' => 'required',
-                'password' => 'required',
+                "email" => "required",
+                "password" => "required",
             ]
         );
 
         if ($val->fails()) {
             return response()->json([
-                'status' => 'failed',
-                'message' => $val->errors()
-            ]);
+                "code" => 400,
+                "status" => "BAD_REQUEST",
+                "message" => $val->errors()
+            ], 400);
         }
 
-        $user = User::where('email', $request->email)->first();
+        $user = User::where("email", $request->email)->first();
         if (!$user || !Hash::check($request->password, $user->password)) {
             return response()->json([
-                'status' => 'failed',
-                'message' => 'Sign In Failed'
-            ]);
+                "code" => 400,
+                "status" => "BAD_REQUEST",
+                "message" => "Sign in failed"
+            ], 400);
         }
 
-        $token = $user->createToken('token')->plainTextToken;
-        return response()->json([
-            'status' => 'success',
-            'message' => 'Sign In Successfully',
-            'data' => [
-                'token' => $token,
-                'user_info' => $user,
-            ]
-        ], 200);
-    }
-
-    public function verifyEmail(Request $request)
-    {
-        # code...
+        if ($user->email_verified_at == null) {
+            return response()->json([
+                "code" => 400,
+                "status" => "BAD_REQUEST",
+                "message" => "please verify your email to get started",
+            ], 400);
+        } else {
+            $token = $user->createToken("token")->plainTextToken;
+            return response()->json([
+                "code" => 200,
+                "status" => "OK",
+                "data" => [
+                    "token" => $token,
+                    "user" => $user,
+                ]
+            ], 200);
+        }
     }
 }
