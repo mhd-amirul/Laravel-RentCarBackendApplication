@@ -103,4 +103,51 @@ class authentikasiController extends Controller
             ], 200);
         }
     }
+
+    public function verifyEmail(Request $request)
+    {
+        $val = Validator::make($request->all(),
+            [
+                "email" => "required",
+                "otp" => "required",
+            ]
+        );
+
+        if ($val->fails()) {
+            return response()->json([
+                "code" => 400,
+                "status" => "BAD_REQUEST",
+                "massage" => $val->errors()
+            ], 400);
+        }
+
+        $user = User::where("email", $request->email)->first();
+        $otp = otpCode::where("otp", $request->otp)->first();
+        if ($user) {
+            if ($otp) {
+                if ($user->email == $otp->email) {
+                    $user->email_verified_at = new DateTime();
+                    $user->save();
+                    $otp->delete();
+                    return response()->json([
+                        "code" => 200,
+                        "status" => "OK",
+                        "message" => "email has verified at ".$user->email_verified_at
+                    ], 200);
+                }
+            } else {
+                return response()->json([
+                    "code" => 400,
+                    "status" => "BAD_REQUEST",
+                    "message" => "invalid otp code"
+                ], 400);
+            }
+        } else {
+            return response()->json([
+                "code" => 404,
+                "status" => "NOT_FOUND",
+                "message" => "user not found"
+            ], 404);
+        }
+    }
 }
