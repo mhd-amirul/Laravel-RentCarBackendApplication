@@ -53,40 +53,41 @@ class profileController extends Controller
             "code" => 200,
             "status" => "OK",
             "data" => $user
-        ]);
-
+        ], 200);
     }
 
     public function resetPassword(Request $request)
     {
+        $data = $request->all();
         $rules = [
             "oldpassword" => "required",
             "password" => "required|min:5",
             "confirmpassword" => "required|same:password"
         ];
 
-        $val = Validator::make($request->all(), $rules);
+        $val = Validator::make($data, $rules);
         if ($val->fails()) {
             return response()->json([
-                "status" => "failed",
+                "code" => 400,
+                "status" => "BAD_REQUEST",
                 "message" => $val->errors()
-            ]);
+            ], 400);
         }
 
-        $data = $request->all();
         $user = User::where("email", auth()->user()->email)->first();
         if (Hash::check($data["oldpassword"], $user->password)) {
             $data["password"] = Hash::make($data["password"]);
             $user->update($data);
             return response()->json([
-                "status" => "success",
-                "message" => "Password have been Updated",
-                "new_information" => $user
+                "code" => 200,
+                "status" => "OK",
+                "message" => "password has been updated",
             ], 200);
         }
         return response()->json([
-            "status" => "failed",
-            "message" => "Password not Valid"
-        ]);
+            "code" => 400,
+            "status" => "BAD_REQUEST",
+            "message" => "invalid password"
+        ], 400);
     }
 }
