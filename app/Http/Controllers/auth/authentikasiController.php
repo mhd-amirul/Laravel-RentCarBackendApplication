@@ -4,8 +4,12 @@ namespace App\Http\Controllers\auth;
 
 use App\Events\verifyAccountEvent;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\signupRequest;
 use App\Models\otpCode;
 use App\Models\User;
+use App\Notifications\emailNotification;
+use App\Services\Otp\IOtpService;
+use App\Services\User\IUserService;
 use DateTime;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -13,50 +17,27 @@ use Illuminate\Support\Facades\Validator;
 
 class authentikasiController extends Controller
 {
-    public function register(Request $request)
+    private $userServices;
+    public function __construct(IUserService $userServices,)
     {
-        $user = $request->all();
-        $val = Validator::make($user,
-            [
-                "first_name" => "required",
-                "last_name" => "required",
-                "email" => "required|email|unique:users",
-                "no_hp" => "required|min:3|unique:users",
-                "password" => "required|min:5",
-                "confirmpassword" => "required|same:password",
-            ]
-        );
-
-        if ($val->fails()) {
-            return response()->json([
-                "code" => 400,
-                "status" => "BAD_REQUEST",
-                "message" => $val->errors()
-            ], 400);
-        }
-
-        $user["password"] = Hash::make($user["password"]);
-        User::create($user);
-
-        $otp = [
-            "email" => $user["email"],
-            "otp" => rand(1000, 9999)
+        $userServices = $this->userServices = $userServices;
+        return [
+            $userServices,
         ];
-        otpCode::create($otp);
-
-        verifyAccountEvent::dispatch($otp);
-        return response()->json(
-            [
-                "code" => 200,
-                "status" => "OK",
-                "message" => "Sign Up Succesfully",
-                "data" => [
-                    "first_name" => $user["first_name"],
-                    "last_name" => $user["last_name"],
-                    "email" => $user["email"],
-                    "no_hp" => $user["no_hp"],
-                ],
-            ], 200);
+    }
+    public function register(signupRequest $request)
+    {
+        $user = $this->userServices->createUser($request);
+        return response()->json([
+            "code" => 200,
+            "status" => "OK",
+            "message" => "Sign Up Succesfully",
+            "data" => [
+                "name" => $user["first_name"] . ' ' . $user["last_name"],
+                "email" => $user["email"],
+                "no_hp" => $user["no_hp"],
+            ],
+        ], 200);
     }
 
     public function login(Request $request)
