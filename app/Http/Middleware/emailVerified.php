@@ -21,7 +21,9 @@ class emailVerified
         }
         return response()->json(
             [
-                'message' => 'Your email address is not verified!'
+                "code" => 403,
+                "status" => "FORBIDDEN",
+                "message" => "please verify your email address"
             ], 403
         );
     }
