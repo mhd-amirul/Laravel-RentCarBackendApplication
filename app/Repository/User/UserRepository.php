@@ -17,4 +17,9 @@ class UserRepository implements IUserRepository
     {
         return $this->user->create($data);
     }
+
+    public function where($data)
+    {
+        return $this->user->where('email', $data)->first();
+    }
 }
