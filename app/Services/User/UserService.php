@@ -18,7 +18,11 @@ class UserService implements IUserService
     {
         $data = $request->all();
         $data["password"] = Hash::make($data["password"]);
-
         return $this->userRepository->create($data);
+    }
+
+    public function whereUser($request)
+    {
+        return $this->userRepository->where($request);
     }
 }
