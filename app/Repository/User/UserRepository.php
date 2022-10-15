@@ -22,4 +22,15 @@ class UserRepository implements IUserRepository
     {
         return $this->user->where('email', $data)->first();
     }
+
+    public function update($email, $data)
+    {
+        $user = $this->where($email);
+        return $user->update($data);
+    }
+
+    public function save($user)
+    {
+        return $user->save();
+    }
 }
