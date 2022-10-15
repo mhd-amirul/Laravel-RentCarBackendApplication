@@ -5,6 +5,7 @@ namespace App\Services\Otp;
 use App\Helpers\ResponseFormatter;
 use App\Repository\Otp\IOtpRepository;
 use App\Services\Otp\IOtpService;
+use Carbon\Carbon;
 
 class OtpService implements IOtpService
 {
@@ -41,12 +42,15 @@ class OtpService implements IOtpService
         try {
             if ($user) {
                 if ($otp && $user->email == $otp->email && $otp->otp == $request->otp) {
-                    return "success";
+                    return [
+                        "status" => "success",
+                        "data" => Carbon::now()
+                    ];
                 } else {
-                    return "otpfail";
+                    return [ "status" => "otpfail" ];
                 }
             } else {
-                return "userfail";
+                return [ "status" => "userfail" ];
             }
         } catch (\Exception $th) {
             throw ResponseFormatter::throwErr();
