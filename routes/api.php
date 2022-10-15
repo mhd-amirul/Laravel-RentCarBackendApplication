@@ -30,8 +30,8 @@ Route::group([], function ()
 Route::middleware(['auth:sanctum', 'emailVerified'])->group(function () {
     Route::group(['prefix' => 'profile'], function ()
         {
-            Route::post('/',[profileController::class, 'profil']);
-            Route::put('edit',[profileController::class, 'edit']);
+            Route::get('/',[profileController::class, 'profil']);
+            Route::put('update',[profileController::class, 'edit']);
             Route::put('resetpass',[profileController::class, 'resetPassword']);
         }
     );

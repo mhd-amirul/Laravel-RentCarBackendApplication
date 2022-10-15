@@ -3,16 +3,28 @@
 namespace App\Http\Controllers\profile;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\resetPassword;
+use App\Http\Requests\updateProfile;
 use App\Models\User;
+use App\Services\User\IUserService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
 class profileController extends Controller
 {
+    private $userService;
+
+    public function __construct(IUserService $userService)
+    {
+        return [
+            $this->userService = $userService,
+        ];
+    }
+
     public function profil()
     {
-        $user = User::where("email", auth()->user()->email)->first();
+        $user = $this->userService->whereUser(auth()->user()->email);
         if ($user) {
             return response()->json([
                 "status" => "OK",
@@ -20,74 +32,37 @@ class profileController extends Controller
             ], 200);
         } else {
             return response()->json([
-                "code" => 404,
                 "status" => "NOT_FOUND",
                 "message" => "user not found"
             ]);
         }
     }
 
-    public function edit(Request $request)
+    public function edit(updateProfile $request)
     {
-        $data = $request->all();
-        $user = User::where("email", auth()->user()->email)->first();
-        $rules = [];
-        if ($request->email != $user->email && $request->email != null) {
-            $rules["email"] = "required|email|unique:users";
-        }
-        if ($request->no_hp != $user->no_hp && $request->no_hp != null) {
-            $rules["no_hp"] = "required|min:3|unique:users";
-        }
-
-        $val = Validator::make($data,$rules);
-        if ($val->fails()) {
-            return response()->json([
-                "code" => 400,
-                "status" => "BAD_REQUEST",
-                "message" => $val->errors()
-            ], 400);
-        }
-
-        $user->update($data);
+        $this->userService->updateUser(auth()->user()->email, $request);
+        $user = $this->userService->whereUser(auth()->user()->email);
         return response()->json([
-            "code" => 200,
             "status" => "OK",
             "data" => $user
         ], 200);
     }
 
-    public function resetPassword(Request $request)
+    public function resetPassword(resetPassword $request)
     {
-        $data = $request->all();
-        $rules = [
-            "oldpassword" => "required",
-            "password" => "required|min:5",
-            "confirmpassword" => "required|same:password"
-        ];
-
-        $val = Validator::make($data, $rules);
-        if ($val->fails()) {
+        $user = $this->userService->whereUser(auth()->user()->email);
+        if (!Hash::check($request["oldpassword"], $user->password)) {
             return response()->json([
-                "code" => 400,
                 "status" => "BAD_REQUEST",
-                "message" => $val->errors()
+                "message" => "invalid password"
             ], 400);
         }
 
-        $user = User::where("email", auth()->user()->email)->first();
-        if (Hash::check($data["oldpassword"], $user->password)) {
-            $data["password"] = Hash::make($data["password"]);
-            $user->update($data);
-            return response()->json([
-                "code" => 200,
-                "status" => "OK",
-                "message" => "password has been updated",
-            ], 200);
-        }
+        $request["password"] = Hash::make($request["password"]);
+        $this->userService->updateUser($user->email, $request);
         return response()->json([
-            "code" => 400,
-            "status" => "BAD_REQUEST",
-            "message" => "invalid password"
-        ], 400);
+            "status" => "OK",
+            "message" => "password has been updated",
+        ], 200);
     }
 }
