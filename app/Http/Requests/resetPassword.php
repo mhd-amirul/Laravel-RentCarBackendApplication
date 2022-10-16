@@ -24,9 +24,9 @@ class resetPassword extends FormRequest
     public function rules()
     {
         return [
-            "oldpassword" => "required",
-            "password" => "required|min:5|confirmed",
-            "password_confirmation" => "required"
+            "password" => "required",
+            "new_password" => "required|min:5|confirmed",
+            "new_password_confirmation" => "required"
         ];
     }
 }
