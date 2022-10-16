@@ -26,7 +26,8 @@ class UserRepository implements IUserRepository
     public function update($email, $data)
     {
         $user = $this->where($email);
-        return $user->update($data);
+        $user->update($data);
+        return $user;
     }
 
     public function save($user)
