@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\auth\authentikasiController;
 use App\Http\Controllers\profile\profileController;
+use App\Http\Controllers\store\storeController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -33,6 +34,7 @@ Route::middleware(['auth:sanctum', 'emailVerified'])->group(function () {
             Route::get('/',[profileController::class, 'profil']);
             Route::put('update',[profileController::class, 'edit']);
             Route::put('resetpass',[profileController::class, 'resetPassword']);
+            Route::post('create-store',[storeController::class, 'registerStore']);
         }
     );
 });
