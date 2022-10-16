@@ -7,7 +7,6 @@ use App\Notifications\emailNotification;
 use App\Repository\User\IUserRepository;
 use App\Services\User\IUserService;
 use Illuminate\Support\Facades\Hash;
-use DateTime;
 
 class UserService implements IUserService
 {
@@ -41,7 +40,8 @@ class UserService implements IUserService
     public function updateUser($user, $request)
     {
         try {
-            return $this->userRepository->update($user, $request);
+            $data = $request->all();
+            return $this->userRepository->update($user, $data);
         } catch (\Exception $th) {
             throw ResponseFormatter::throwErr();
         }
@@ -50,7 +50,7 @@ class UserService implements IUserService
     public function checkPassword($user, $request)
     {
         try {
-            if (!$user || !Hash::check($request->password, $user->password)) {
+            if (!Hash::check($request->password, $user->password)) {
                 return "invalid";
             }
         } catch (\Exception $th) {
