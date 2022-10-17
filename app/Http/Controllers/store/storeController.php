@@ -17,13 +17,15 @@ class storeController extends Controller
             "name" => "required",
             "owner" => "required",
             "nik" => "required|digits:16",
-            "address" => "required",
+            "village" => "required",
+            "city" => "required",
+            "province" => "required",
             "latitude" => "required",
             "longitude" => "required",
-            // "ktp" => "file",
-            // "siu" => "file",
-            // "img_owner" => "file",
-            // "img_store" => "file",
+            "ktp" => "file",
+            "siu" => "file",
+            "img_owner" => "file",
+            "img_store" => "file",
         ];
 
         $val = Validator::make($data, $rule);
@@ -31,12 +33,24 @@ class storeController extends Controller
             return ResponseFormatter::error(null, $val->errors());
         }
 
-        // if ($request->file("ktp")) {
-        //     $data["ktp"] = $request->file("ktp");
-        // }
+        if ($request->has("ktp")) {
+            $filename = time().rand(1111,9999).".".$request->ktp->extension();
+            $destinationPath = "storage\image";
+            $data["ktp"] = $destinationPath."\\".$filename;
+            $request->ktp->move($destinationPath, $filename);
+        }
+
         $data["slug"] = time() . rand(11111, 99999) . $data["user"];
         $data["user"] = auth()->user()->email;
-        $data["coordinate"] = $data["latitude"] . "|" . $data["longitude"];
+        $data["coordinate"] = [
+            "latitude" => $data["latitude"],
+            "longitude" => $data["longitude"]
+        ];
+        $data["address"] = [
+            "village" => $data["village"],
+            "city" => $data["city"],
+            "province" => $data["province"]
+        ];
         // $data = store::create($data);
         return response()->json($data);
     }
