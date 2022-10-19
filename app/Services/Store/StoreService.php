@@ -14,6 +14,7 @@ class StoreService implements IStoreService
     {
         return $this->storeRepository = $storeRepository;
     }
+
     public function createStore($request)
     {
         try {
@@ -49,9 +50,7 @@ class StoreService implements IStoreService
                 "city" => $data["city"],
                 "province" => $data["province"]
             ];
-
             return $this->storeRepository->create($data);
-
         } catch (\Exception $th) {
             throw ResponseFormatter::throwErr();
         }
