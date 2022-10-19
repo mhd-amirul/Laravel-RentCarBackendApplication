@@ -33,9 +33,9 @@ class ResponseFormatter
         return response()->json(self::$response, self::$response['meta']['code']);
     }
 
-    public static function throwErr()
+    public static function throwErr($message = "Something wrong!")
     {
-        return ValidationException::withMessages(["error" => ['Something wrong!']]);
+        return ValidationException::withMessages(["error" => $message]);
     }
 
 }
