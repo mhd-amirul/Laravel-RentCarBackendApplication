@@ -26,7 +26,7 @@ class storeRequest extends FormRequest
         return [
             "name" => "required|min:5|max:20",
             "owner" => "required|min:5|max:20",
-            "nik" => "required|digits:16",
+            "nik" => "required|digits:16|unique:stores,nik",
             "village" => "required",
             "city" => "required",
             "province" => "required",
