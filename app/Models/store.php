@@ -10,7 +10,11 @@ class store extends Model
 {
     use HasFactory;
 
+    protected $connection = 'mongodb';
+    protected $collection = 'stores';
+
     protected $fillable = [
+        "slug",
         "name",
         "owner",
         "nik",
