@@ -26,4 +26,15 @@ class storeController extends Controller
         $store = $this->storeService->createStore($request);
         return ResponseFormatter::success($store, "success");
     }
+
+    public function agreementStore()
+    {
+        # make user to agree with app condition and term
+
+    }
+
+    public function updateStore(Request $request, $slug)
+    {
+        # code...
+    }
 }
