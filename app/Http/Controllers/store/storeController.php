@@ -9,6 +9,7 @@ use App\Http\Requests\storeRequest;
 use App\Models\store;
 use App\Services\Store\IStoreService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class storeController extends Controller
 {
@@ -33,8 +34,28 @@ class storeController extends Controller
 
     }
 
-    public function updateStore(Request $request, $slug)
+    public function updateStore(Request $request)
     {
-        # code...
+        $store = store::where("user", request()->query("user"))->first();
+        $data = $request->all();
+        $rule = [
+            "name" => "nullable|min:5|max:20",
+            "owner" => "nullable|min:5|max:20",
+            "nik" => "nullable|digits:16|unique:stores,nik",
+            "ktp" => "nullable|mimes:png,jpg|max:2048",
+            "siu" => "nullable|mimes:png,jpg|max:2048",
+            "img_owner" => "nullable|mimes:png,jpg|max:2048",
+            "img_store" => "nullable|mimes:png,jpg|max:2048",
+        ];
+        if ($request->has("ktp")) {
+            if ($store->ktp) {
+                Storage::delete($store->ktp);
+                return response()->json($store->ktp);
+            }
+            // $file = handleFile::image($data["ktp"], "ktp");
+            // $data["ktp"] = $file["fullpath"];
+            // $request->ktp->move($file["path"], $file["filename"]);
+        }
+        return response()->json([$data, $store]);
     }
 }
