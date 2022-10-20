@@ -35,6 +35,7 @@ Route::middleware(['auth:sanctum', 'emailVerified'])->group(function () {
             Route::put('update',[profileController::class, 'edit']);
             Route::put('resetpass',[profileController::class, 'resetPassword']);
             Route::post('create-store',[storeController::class, 'registerStore']);
+            Route::post('update-store',[storeController::class, 'updateStore']);
         }
     );
 });
