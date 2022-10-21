@@ -17,4 +17,9 @@ class StoreRepository implements IStoreRepository
     {
         return $this->store->create($data);
     }
+
+    public function where($user)
+    {
+        return $this->store->where("user", $user)->first();
+    }
 }
