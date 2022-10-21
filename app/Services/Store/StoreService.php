@@ -15,30 +15,28 @@ class StoreService implements IStoreService
         return $this->storeRepository = $storeRepository;
     }
 
+    public function addFile($request, $lastPath)
+    {
+        try {
+            if ($request->has($lastPath)) {
+                $filename = time().rand(1111,9999).".".$request[$lastPath]->extension();
+                $path = "storage\image\\".$lastPath;
+                $request[$lastPath]->move($path, $filename);
+                return $path."\\".$filename;
+            }
+        } catch (\Throwable $th) {
+            throw ResponseFormatter::throwErr("addFile Error!");
+        }
+    }
+
     public function createStore($request)
     {
         try {
             $data = $request->all();
-            if ($request->has("ktp")) {
-                $file = handleFile::image($data["ktp"], "ktp");
-                $data["ktp"] = $file["fullpath"];
-                $request->ktp->move($file["path"], $file["filename"]);
-            }
-            if ($request->has("siu")) {
-                $file = handleFile::image($data["siu"], "siu");
-                $data["siu"] = $file["fullpath"];
-                $request->siu->move($file["path"], $file["filename"]);
-            }
-            if ($request->has("img_owner")) {
-                $file = handleFile::image($data["img_owner"], "img_owner");
-                $data["img_owner"] = $file["fullpath"];
-                $request->img_owner->move($file["path"], $file["filename"]);
-            }
-            if ($request->has("img_store")) {
-                $file = handleFile::image($data["img_store"], "img_store");
-                $data["img_store"] = $file["fullpath"];
-                $request->img_store->move($file["path"], $file["filename"]);
-            }
+            $data["ktp"] = $this->addFile($request, "ktp");
+            $data["siu"] = $this->addFile($request, "siu");
+            $data["img_owner"] = $this->addFile($request, "img_owner");
+            $data["img_store"] = $this->addFile($request, "img_store");
             $data["user"] = auth()->user()->email;
             $data["slug"] = time() . rand(11111, 99999) . $data["user"];
             $data["coordinate"] = [
@@ -52,7 +50,7 @@ class StoreService implements IStoreService
             ];
             return $this->storeRepository->create($data);
         } catch (\Exception $th) {
-            throw ResponseFormatter::throwErr();
+            throw ResponseFormatter::throwErr("createStore Error!");
         }
     }
 }
