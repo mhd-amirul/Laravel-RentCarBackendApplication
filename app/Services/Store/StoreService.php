@@ -29,6 +29,11 @@ class StoreService implements IStoreService
         }
     }
 
+    public function whereStore($user)
+    {
+        return $this->storeRepository->where($user);
+    }
+
     public function createStore($request)
     {
         try {
@@ -52,5 +57,10 @@ class StoreService implements IStoreService
         } catch (\Exception $th) {
             throw ResponseFormatter::throwErr("createStore Error!");
         }
+    }
+
+    public function updateStore($user)
+    {
+        return $this->whereStore($user);
     }
 }
