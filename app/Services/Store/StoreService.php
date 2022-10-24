@@ -2,10 +2,10 @@
 
 namespace App\Services\Store;
 
-use App\Helpers\handleFile;
 use App\Helpers\ResponseFormatter;
 use App\Repository\Store\IStoreRepository;
 use App\Services\Store\IStoreService;
+use Illuminate\Support\Facades\File;
 
 class StoreService implements IStoreService
 {
@@ -59,8 +59,45 @@ class StoreService implements IStoreService
         }
     }
 
-    public function updateStore($user)
+    public function updateStore($store, $request)
     {
-        return $this->whereStore($user);
+        $data = $request->all();
+        if ($request->has("ktp")) {
+            if ($store->ktp) {
+                File::delete($store->ktp);
+            }
+            $filename = time().rand(1111,9999).".".$request["ktp"]->extension();
+            $path = "storage\image\ktp";
+            $data["ktp"] = $path."\\".$filename;
+            $request->ktp->move($path, $filename);
+        }
+        if ($request->has("siu")) {
+            if ($store->siu) {
+                File::delete($store->siu);
+            }
+            $filename = time().rand(1111,9999).".".$request["siu"]->extension();
+            $path = "storage\image\siu";
+            $data["siu"] = $path."\\".$filename;
+            $request->siu->move($path, $filename);
+        }
+        if ($request->has("img_owner")) {
+            if ($store->img_owner) {
+                File::delete($store->img_owner);
+            }
+            $filename = time().rand(1111,9999).".".$request["img_owner"]->extension();
+            $path = "storage\image\img_owner";
+            $data["img_owner"] = $path."\\".$filename;
+            $request->img_owner->move($path, $filename);
+        }
+        if ($request->has("img_store")) {
+            if ($store->img_store) {
+                File::delete($store->img_store);
+            }
+            $filename = time().rand(1111,9999).".".$request["img_store"]->extension();
+            $path = "storage\image\img_store";
+            $data["img_store"] = $path."\\".$filename;
+            $request->img_store->move($path, $filename);
+        }
+        return $this->storeRepository->update($store, $data);
     }
 }
