@@ -29,6 +29,23 @@ class StoreService implements IStoreService
         }
     }
 
+    public function updateFile($request, $lastPath, $store)
+    {
+        try {
+            if ($request->has($lastPath)) {
+                if ($store->ktp) {
+                    File::delete($store->ktp);
+                }
+                $filename = time().rand(1111,9999).".".$request[$lastPath]->extension();
+                $path = "storage\image\\".$lastPath;
+                $request[$lastPath]->move($path, $filename);
+                return $path."\\".$filename;
+            }
+        } catch (\Exception $th) {
+            return ResponseFormatter::throwErr("update file was wrong!");
+        }
+    }
+
     public function whereStore($user)
     {
         return $this->storeRepository->where($user);
