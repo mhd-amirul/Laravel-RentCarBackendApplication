@@ -22,4 +22,10 @@ class StoreRepository implements IStoreRepository
     {
         return $this->store->where("user", $user)->first();
     }
+
+    public function update($store, $data)
+    {
+        $store->update($data);
+        return $store;
+    }
 }
