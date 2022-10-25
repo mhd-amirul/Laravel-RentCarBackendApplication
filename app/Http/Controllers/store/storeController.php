@@ -2,17 +2,11 @@
 
 namespace App\Http\Controllers\store;
 
-use App\Helpers\handleFile;
 use App\Helpers\ResponseFormatter;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\storeRequest;
 use App\Http\Requests\updateStoreRequest;
-use App\Models\store;
 use App\Services\Store\IStoreService;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\File;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\Validator;
 
 class storeController extends Controller
 {
@@ -34,7 +28,6 @@ class storeController extends Controller
     public function agreementStore()
     {
         # make user to agree with app condition and term
-
     }
 
     public function updateStore(updateStoreRequest $request)
