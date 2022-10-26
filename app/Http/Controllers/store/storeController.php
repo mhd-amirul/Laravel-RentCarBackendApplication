@@ -34,6 +34,6 @@ class storeController extends Controller
     {
         $store = $this->storeService->whereStore(auth()->user()->email);
         $newStore = $this->storeService->updateStore($store, $request);
-        return ResponseFormatter::success([$store, $newStore]);
+        return ResponseFormatter::success([$newStore]);
     }
 }
