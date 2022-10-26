@@ -16,23 +16,6 @@ class StoreService implements IStoreService
         return $this->storeRepository = $storeRepository;
     }
 
-    public function updateFile($request, $lastPath, $store)
-    {
-        try {
-            if ($request->has($lastPath)) {
-                if ($store->ktp) {
-                    File::delete($store->ktp);
-                }
-                $filename = time().rand(1111,9999).".".$request[$lastPath]->extension();
-                $path = "storage\image\\".$lastPath;
-                $request[$lastPath]->move($path, $filename);
-                return $path."\\".$filename;
-            }
-        } catch (\Exception $th) {
-            return ResponseFormatter::throwErr("update file was wrong!");
-        }
-    }
-
     public function whereStore($user)
     {
         return $this->storeRepository->where($user);
@@ -48,6 +31,7 @@ class StoreService implements IStoreService
             $data["img_store"] = handleFile::addFile($request,"img_store");
             $data["user"] = auth()->user()->email;
             $data["slug"] = time() . rand(11111, 99999) . $data["user"];
+            $data["status"] = "disable";
             $data["coordinate"] = [
                 "latitude" => $data["latitude"],
                 "longitude" => $data["longitude"]
@@ -59,17 +43,44 @@ class StoreService implements IStoreService
             ];
             return $this->storeRepository->create($data);
         } catch (\Exception $th) {
-            throw ResponseFormatter::throwErr("createStore Error!");
+            throw ResponseFormatter::throwErr($th);
         }
     }
 
     public function updateStore($store, $request)
     {
         $data = $request->all();
-        $data["ktp"] = $this->updateFile($request, "ktp", $store);
-        $data["siu"] = $this->updateFile($request, "siu", $store);
-        $data["img_owner"] = $this->updateFile($request, "img_owner", $store);
-        $data["img_store"] = $this->updateFile($request, "img_store", $store);
+        $data["coordinate"] = $store->coordinate;
+        $data["address"] = $store->address;
+        if ($request->has("ktp")) {
+            $data["ktp"] = handleFile::updateFile($request, "ktp", $store);
+        }
+        if ($request->has("siu")) {
+            $data["siu"] = handleFile::updateFile($request, "siu", $store);
+        }
+        if ($request->has("img_owner")) {
+            $data["img_owner"] = handleFile::updateFile($request, "img_owner", $store);
+        }
+        if ($request->has("img_store")) {
+            $data["img_store"] = handleFile::updateFile($request, "img_store", $store);
+        }
+
+        if ($request->has("latitude")) {
+            $data["coordinate"]["latitude"] = $request->latitude;
+        }
+        if ($request->has("longitude")) {
+            $data["coordinate"]["longitude"] = $request->longitude;
+        }
+
+        if ($request->has("village")) {
+            $data["address"]["village"] = $request->village;
+        }
+        if ($request->has("city")) {
+            $data["address"]["city"] = $request->city;
+        }
+        if ($request->has("province")) {
+            $data["address"]["province"] = $request->province;
+        }
         return $this->storeRepository->update($store, $data);
     }
 }
