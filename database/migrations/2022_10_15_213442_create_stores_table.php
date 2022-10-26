@@ -25,7 +25,7 @@ return new class extends Migration
             $table->string("siu")->nullable();
             $table->string("img_owner")->nullable();
             $table->string("img_store")->nullable();
-            $table->string("status")->default("disable");
+            $table->string("status");
             $table->timestamps();
         });
     }
