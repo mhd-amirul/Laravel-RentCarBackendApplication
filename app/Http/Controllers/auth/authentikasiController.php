@@ -25,7 +25,7 @@ class authentikasiController extends Controller
     public function register(signupRequest $request)
     {
         $user = $this->userServices->createUser($request);
-        $otp = $this->otpServices->createOtp($request);
+        $otp = $this->otpServices->createOtp($user);
         $this->userServices->sendMail($user, $otp);
         return ResponseFormatter::success($user, "Sign up success");
 
