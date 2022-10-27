@@ -6,7 +6,6 @@ use App\Helpers\handleFile;
 use App\Helpers\ResponseFormatter;
 use App\Repository\Store\IStoreRepository;
 use App\Services\Store\IStoreService;
-use Illuminate\Support\Facades\File;
 
 class StoreService implements IStoreService
 {
@@ -49,38 +48,42 @@ class StoreService implements IStoreService
 
     public function updateStore($store, $request)
     {
-        $data = $request->all();
-        $data["coordinate"] = $store->coordinate;
-        $data["address"] = $store->address;
-        if ($request->has("ktp")) {
-            $data["ktp"] = handleFile::updateFile($request, "ktp", $store);
-        }
-        if ($request->has("siu")) {
-            $data["siu"] = handleFile::updateFile($request, "siu", $store);
-        }
-        if ($request->has("img_owner")) {
-            $data["img_owner"] = handleFile::updateFile($request, "img_owner", $store);
-        }
-        if ($request->has("img_store")) {
-            $data["img_store"] = handleFile::updateFile($request, "img_store", $store);
-        }
+        try {
+            $data = $request->all();
+            $data["coordinate"] = $store->coordinate;
+            $data["address"] = $store->address;
+            if ($request->has("ktp")) {
+                $data["ktp"] = handleFile::updateFile($request, "ktp", $store);
+            }
+            if ($request->has("siu")) {
+                $data["siu"] = handleFile::updateFile($request, "siu", $store);
+            }
+            if ($request->has("img_owner")) {
+                $data["img_owner"] = handleFile::updateFile($request, "img_owner", $store);
+            }
+            if ($request->has("img_store")) {
+                $data["img_store"] = handleFile::updateFile($request, "img_store", $store);
+            }
 
-        if ($request->has("latitude")) {
-            $data["coordinate"]["latitude"] = $request->latitude;
-        }
-        if ($request->has("longitude")) {
-            $data["coordinate"]["longitude"] = $request->longitude;
-        }
+            if ($request->has("latitude")) {
+                $data["coordinate"]["latitude"] = $request->latitude;
+            }
+            if ($request->has("longitude")) {
+                $data["coordinate"]["longitude"] = $request->longitude;
+            }
 
-        if ($request->has("village")) {
-            $data["address"]["village"] = $request->village;
+            if ($request->has("village")) {
+                $data["address"]["village"] = $request->village;
+            }
+            if ($request->has("city")) {
+                $data["address"]["city"] = $request->city;
+            }
+            if ($request->has("province")) {
+                $data["address"]["province"] = $request->province;
+            }
+            return $this->storeRepository->update($store, $data);
+        } catch (\Exception $th) {
+            return ResponseFormatter::throwErr("updateStore failed!");
         }
-        if ($request->has("city")) {
-            $data["address"]["city"] = $request->city;
-        }
-        if ($request->has("province")) {
-            $data["address"]["province"] = $request->province;
-        }
-        return $this->storeRepository->update($store, $data);
     }
 }
