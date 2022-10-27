@@ -2,6 +2,7 @@
 
 namespace App\Services\Otp;
 
+use App\Helpers\arrNested;
 use App\Helpers\ResponseFormatter;
 use App\Repository\Otp\IOtpRepository;
 use App\Services\Otp\IOtpService;
@@ -19,12 +20,12 @@ class OtpService implements IOtpService
     {
         try {
             $data = [
-                "email" => $request->email,
+                "user" => arrNested::userInformation($request),
                 "otp" => rand(1000, 9999)
             ];
             return $this->otpRepository->create($data);
         } catch (\Exception $th) {
-            throw ResponseFormatter::throwErr();
+            throw ResponseFormatter::throwErr("create otp failed");
         }
     }
 
@@ -33,7 +34,7 @@ class OtpService implements IOtpService
         try {
             return $this->otpRepository->where($request);
         } catch (\Exception $th) {
-            throw ResponseFormatter::throwErr();
+            throw ResponseFormatter::throwErr($th);
         }
     }
 
@@ -41,7 +42,7 @@ class OtpService implements IOtpService
     {
         try {
             if ($user) {
-                if ($otp && $user->email == $otp->email && $otp->otp == $request->otp) {
+                if ($otp && $user->email == $otp["user"]["email"] && $otp->otp == $request->otp) {
                     return [
                         "status" => "success",
                         "data" => Carbon::now()
