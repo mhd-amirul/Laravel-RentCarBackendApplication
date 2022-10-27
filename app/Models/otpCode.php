@@ -9,6 +9,10 @@ use Jenssegers\Mongodb\Eloquent\Model;
 class otpCode extends Model
 {
     use HasFactory;
-
-    protected $guarded = ['id'];
+    protected $connection = 'mongodb';
+    protected $collection = 'otp_codes';
+    protected $fillable = [
+        "user",
+        "otp"
+    ];
 }
