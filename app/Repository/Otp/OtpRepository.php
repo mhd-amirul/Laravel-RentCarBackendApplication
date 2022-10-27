@@ -20,7 +20,7 @@ class OtpRepository implements IOtpRepository
 
     public function where($data)
     {
-        return $this->otp->where('email', $data)->first();
+        return $this->otp->where('user', 'exists', ['email', $data])->first();
     }
 
     public function delete($data)
