@@ -7,6 +7,8 @@ use App\Helpers\ResponseFormatter;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\storeRequest;
 use App\Http\Requests\updateStoreRequest;
+use App\Http\Requests\userAgreementRequest;
+use App\Models\store;
 use App\Models\userAgreement;
 use App\Services\Store\IStoreService;
 use App\Services\User\IUserService;
@@ -31,19 +33,16 @@ class storeController extends Controller
         return ResponseFormatter::success($store, "Store has been registered!");
     }
 
-    public function agreementStore(Request $request)
+    public function agreementStore(userAgreementRequest $request)
     {
         # make user to agree with app condition and term
-
-        $data = $request->all();
-        $val = Validator::make($data,["status" => "required"]);
-        if ($val->fails()) {
-            return response()->json($val->errors());
-        }
-
-        $data["user"] = arrNested::userInformation(auth()->user());
-        $user = userAgreement::create($data);
-        return response()->json($user);
+        $request["user"] = arrNested::userInformation(auth()->user());
+        $request["status"] = $request->status;
+        $request["description"] = "This user agree with our user service and privacy term";
+        $store = store::where("user", "exists", ["email" => $request["user"]["email"]])->first();
+        $store["status"] = 1;
+        return response()->json($store);
+        $user = userAgreement::create($request);
     }
 
     public function updateStore(updateStoreRequest $request)
