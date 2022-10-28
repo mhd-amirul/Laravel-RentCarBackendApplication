@@ -37,7 +37,13 @@ class DatabaseSeeder extends Seeder
 
         otpCode::create(
             [
-                "email" => "lohsu86@gmail.com",
+                "user" => [
+                    "_id" => " ",
+                    "first_name" => "Muhammad",
+                    "last_name" => "Amirul",
+                    "email" => "lohsu86@gmail.com",
+                    "no_hp" => "082300000000",
+                ],
                 "otp" => 5171
             ]
         );
