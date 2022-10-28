@@ -2,6 +2,7 @@
 
 namespace App\Services\Store;
 
+use App\Helpers\arrNested;
 use App\Helpers\handleFile;
 use App\Helpers\ResponseFormatter;
 use App\Repository\Store\IStoreRepository;
@@ -28,9 +29,9 @@ class StoreService implements IStoreService
             $data["siu"] = handleFile::addFile($request,"siu");
             $data["img_owner"] = handleFile::addFile($request,"img_owner");
             $data["img_store"] = handleFile::addFile($request,"img_store");
-            $data["user"] = auth()->user()->email;
-            $data["slug"] = time() . rand(11111, 99999) . $data["user"];
-            $data["status"] = "disable";
+            $data["user"] = arrNested::userInformation(auth()->user());
+            $data["slug"] = time() . rand(11111, 99999) . $data["user"]["email"];
+            $data["status"] = "review";
             $data["coordinate"] = [
                 "latitude" => $data["latitude"],
                 "longitude" => $data["longitude"]
