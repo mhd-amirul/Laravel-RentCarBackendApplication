@@ -20,7 +20,7 @@ class StoreRepository implements IStoreRepository
 
     public function where($user)
     {
-        return $this->store->where("user", $user)->first();
+        return $this->store->where('user', 'exists', ['email', $user])->first();
     }
 
     public function update($store, $data)
