@@ -12,6 +12,7 @@ class userAgreement extends Model
     protected $collection = 'user_agreements';
     protected $fillable = [
         "user",
-        "status"
+        "status",
+        "description"
     ];
 }
