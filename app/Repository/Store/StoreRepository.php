@@ -28,4 +28,9 @@ class StoreRepository implements IStoreRepository
         $store->update($data);
         return $store;
     }
+
+    public function save($store)
+    {
+        return $store->save();
+    }
 }
