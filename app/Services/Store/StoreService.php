@@ -87,4 +87,13 @@ class StoreService implements IStoreService
             return ResponseFormatter::throwErr("updateStore failed!");
         }
     }
+
+    public function saveStore($store)
+    {
+        try {
+            return $this->storeRepository->save($store);
+        } catch (\Exception $th) {
+            throw ResponseFormatter::throwErr("save store error!");
+        }
+    }
 }
