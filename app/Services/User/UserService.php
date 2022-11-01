@@ -23,7 +23,7 @@ class UserService implements IUserService
             $data["password"] = Hash::make($data["password"]);
             return $this->userRepository->create($data);
         } catch (\Exception $th) {
-            throw ResponseFormatter::throwErr();
+            throw ResponseFormatter::throwErr($th, "createUser");
         }
 
     }
@@ -33,7 +33,7 @@ class UserService implements IUserService
         try {
             return $this->userRepository->where($request);
         } catch (\Exception $th) {
-            throw ResponseFormatter::throwErr();
+            throw ResponseFormatter::throwErr($th, "whereUser");
         }
     }
 
@@ -43,7 +43,7 @@ class UserService implements IUserService
             $data = $request->all();
             return $this->userRepository->update($user, $data);
         } catch (\Exception $th) {
-            throw ResponseFormatter::throwErr();
+            throw ResponseFormatter::throwErr($th, "updateUser");
         }
     }
 
@@ -54,7 +54,7 @@ class UserService implements IUserService
                 return "invalid";
             }
         } catch (\Exception $th) {
-            throw ResponseFormatter::throwErr();
+            throw ResponseFormatter::throwErr($th, "checkPassword");
         }
     }
 
@@ -63,7 +63,7 @@ class UserService implements IUserService
         try {
             return $user->notify(new emailNotification($user, $otp));
         } catch (\Throwable $th) {
-            throw ResponseFormatter::throwErr();
+            throw ResponseFormatter::throwErr($th, "sendMail");
         }
     }
 
@@ -72,7 +72,7 @@ class UserService implements IUserService
         try {
             return $this->userRepository->save($user);
         } catch (\Throwable $th) {
-            throw ResponseFormatter::throwErr();
+            throw ResponseFormatter::throwErr($th, "saveUser");
         }
     }
 }
