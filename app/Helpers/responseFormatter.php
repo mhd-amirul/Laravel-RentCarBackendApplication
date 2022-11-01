@@ -33,9 +33,14 @@ class ResponseFormatter
         return response()->json(self::$response, self::$response['meta']['code']);
     }
 
-    public static function throwErr($message = "Something wrong!")
+    public static function throwErr($message = "Something wrong!", $status = " ")
     {
-        return ValidationException::withMessages(["error" => $message]);
+        return ValidationException::withMessages(
+            [
+                "message" => "internal error(".$status.")",
+                "errors" => $message
+            ]
+        );
     }
 
 }
