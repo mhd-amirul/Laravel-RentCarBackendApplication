@@ -3,6 +3,7 @@
 namespace App\Services\userAgreement;
 
 use App\Helpers\arrNested;
+use App\Helpers\ResponseFormatter;
 use App\Repository\userAgreement\IUserAgreementRepository;
 
 class UserAgreementService implements IUserAgreementService
@@ -15,18 +16,24 @@ class UserAgreementService implements IUserAgreementService
 
     public function whereUserAgreement($request)
     {
-        return $this->userAgreementRepository->where($request);
+        try {
+            return $this->userAgreementRepository->where($request);
+        } catch (\Exception $th) {
+            return ResponseFormatter::throwErr($th, "whereUserAgreement");
+        }
+
     }
 
     public function createUserAgreement($request)
     {
-        $data = $request->all();
-        $data["user"] = arrNested::userInformation(auth()->user());
-        $data["status"] = $request->status;
-        $data["description"] = "This user agree with our user service and privacy term";
-        return [
-            "section" => 1,
-            "data" => $this->userAgreementRepository->create($data)
-        ];
+        try {
+            $data = $request->all();
+            $data["user"] = arrNested::userInformation(auth()->user());
+            $data["status"] = $request->status;
+            $data["description"] = "this user agree with our condition and term";
+            return $this->userAgreementRepository->create($data);
+        } catch (\Exception $th) {
+            return ResponseFormatter::throwErr($th, "createUserAgreement");
+        }
     }
 }
