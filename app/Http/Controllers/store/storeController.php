@@ -2,19 +2,14 @@
 
 namespace App\Http\Controllers\store;
 
-use App\Helpers\arrNested;
 use App\Helpers\ResponseFormatter;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\storeRequest;
 use App\Http\Requests\updateStoreRequest;
 use App\Http\Requests\userAgreementRequest;
-use App\Models\store;
-use App\Models\userAgreement;
 use App\Services\Store\IStoreService;
 use App\Services\User\IUserService;
 use App\Services\userAgreement\IUserAgreementService;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
 
 class storeController extends Controller
 {
@@ -38,17 +33,21 @@ class storeController extends Controller
     public function agreementStore(userAgreementRequest $request)
     {
         # make user to agree with app condition and term
+        $store = $this->storeService->whereStore(auth()->user()->email);
         $userAgreement = $this->userAgreementService->whereUserAgreement(auth()->user()->email);
-        if (!$userAgreement) {
-            $userAgreement = $this->userAgreementService->createUserAgreement($request);
-            if ($userAgreement["section"] === 1) {
-                $store = $this->storeService->whereStore(auth()->user()->email);
-                $store["status"] = 1;
-                $this->storeService->saveStore($store);
-                return ResponseFormatter::success($userAgreement["data"]);
+        return response()->json($userAgreement);
+        if ($store) {
+            if (!$userAgreement) {
+                $newuserAgreement = $this->userAgreementService->createUserAgreement($request);
+                if ($newuserAgreement) {
+                    $store["status"] = 1;
+                    $this->storeService->saveStore($store);
+                    return ResponseFormatter::success($newuserAgreement);
+                }
             }
+            return ResponseFormatter::error($userAgreement, "This user already agree with our user service and privacy term", 400);
         }
-        return ResponseFormatter::error($userAgreement, "This user already agree with our user service and privacy term", 400);
+        return ResponseFormatter::error(null, "store didnt exists!");
     }
 
     public function updateStore(updateStoreRequest $request)
