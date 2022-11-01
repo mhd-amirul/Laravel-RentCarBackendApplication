@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Helpers\ResponseFormatter;
 use Closure;
 use Illuminate\Http\Request;
 
@@ -19,12 +20,13 @@ class emailVerified
         if (auth()->user()->email_verified_at) {
             return $next($request);
         }
-        return response()->json(
-            [
-                "code" => 403,
-                "status" => "FORBIDDEN",
-                "message" => "please verify your email address"
-            ], 403
-        );
+        return ResponseFormatter::error(null, "please verify your email address", 403);
+        // return response()->json(
+        //     [
+        //         "code" => 403,
+        //         "status" => "FORBIDDEN",
+        //         "message" => "please verify your email address"
+        //     ], 403
+        // );
     }
 }
