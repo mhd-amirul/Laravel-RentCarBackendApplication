@@ -25,7 +25,7 @@ class OtpService implements IOtpService
             ];
             return $this->otpRepository->create($data);
         } catch (\Exception $th) {
-            throw ResponseFormatter::throwErr("create otp failed");
+            throw ResponseFormatter::throwErr($th, "createOtp");
         }
     }
 
@@ -34,7 +34,7 @@ class OtpService implements IOtpService
         try {
             return $this->otpRepository->where($request);
         } catch (\Exception $th) {
-            throw ResponseFormatter::throwErr($th);
+            throw ResponseFormatter::throwErr($th, "whereOtp");
         }
     }
 
@@ -54,7 +54,7 @@ class OtpService implements IOtpService
                 return [ "status" => "userfail" ];
             }
         } catch (\Exception $th) {
-            throw ResponseFormatter::throwErr();
+            throw ResponseFormatter::throwErr($th, "verifyEmail");
         }
     }
 
@@ -63,7 +63,7 @@ class OtpService implements IOtpService
         try {
             return $this->otpRepository->delete($request);
         } catch (\Exception $th) {
-            throw ResponseFormatter::throwErr();
+            throw ResponseFormatter::throwErr($th, "deleteOtp");
         }
     }
 }
