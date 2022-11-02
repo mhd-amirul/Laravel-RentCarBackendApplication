@@ -7,6 +7,7 @@ use App\Helpers\ResponseFormatter;
 use App\Repository\Otp\IOtpRepository;
 use App\Services\Otp\IOtpService;
 use Carbon\Carbon;
+use Exception;
 
 class OtpService implements IOtpService
 {
@@ -24,7 +25,7 @@ class OtpService implements IOtpService
                 "otp" => rand(1000, 9999)
             ];
             return $this->otpRepository->create($data);
-        } catch (\Exception $th) {
+        } catch (Exception $th) {
             throw ResponseFormatter::throwErr($th, "createOtp");
         }
     }
@@ -33,7 +34,7 @@ class OtpService implements IOtpService
     {
         try {
             return $this->otpRepository->where($request);
-        } catch (\Exception $th) {
+        } catch (Exception $th) {
             throw ResponseFormatter::throwErr($th, "whereOtp");
         }
     }
@@ -53,7 +54,7 @@ class OtpService implements IOtpService
             } else {
                 return [ "status" => "userfail" ];
             }
-        } catch (\Exception $th) {
+        } catch (Exception $th) {
             throw ResponseFormatter::throwErr($th, "verifyEmail");
         }
     }
@@ -62,7 +63,7 @@ class OtpService implements IOtpService
     {
         try {
             return $this->otpRepository->delete($request);
-        } catch (\Exception $th) {
+        } catch (Exception $th) {
             throw ResponseFormatter::throwErr($th, "deleteOtp");
         }
     }
