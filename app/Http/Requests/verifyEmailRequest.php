@@ -24,7 +24,6 @@ class verifyEmailRequest extends FormRequest
     public function rules()
     {
         return [
-            "email" => "required",
             "otp" => "required",
         ];
     }
