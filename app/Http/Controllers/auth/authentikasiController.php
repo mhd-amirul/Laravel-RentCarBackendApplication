@@ -6,6 +6,7 @@ use App\Helpers\ResponseFormatter;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\signinRequest;
 use App\Http\Requests\signupRequest;
+use App\Http\Requests\verifyEmailRequest;
 use App\Services\Otp\IOtpService;
 use App\Services\User\IUserService;
 use Illuminate\Http\Request;
@@ -42,20 +43,26 @@ class authentikasiController extends Controller
         return ResponseFormatter::success($user, "Sign in success");
     }
 
-    public function verifyEmail(Request $request)
+    public function verifyEmail(verifyEmailRequest $request)
     {
-        $user = $this->userServices->whereUser($request->email);
-        $otp = $this->otpServices->whereOtp($request->email);
+        $user = $this->userServices->whereUser(auth()->user()->email);
+        $otp = $this->otpServices->whereOtp(auth()->user()->email);
         $verify = $this->otpServices->verifyEmail($user, $otp, $request);
         if ($verify["status"] === "success") {
             $user["email_verified_at"] = $verify["data"];
             $this->userServices->saveUser($user);
-            $this->otpServices->deleteOtp($request->email);
+            $this->otpServices->deleteOtp(auth()->user()->email);
             return ResponseFormatter::success($user, "email has verified at ".$user->email_verified_at);
         } elseif ($verify["status"] === "otpfail") {
             return ResponseFormatter::error(null, "invalid otp code");
         } elseif ($verify["status"] === "userfail") {
             return ResponseFormatter::error(null, "user not found");
         }
+    }
+
+    public function logout()
+    {
+        $this->userServices->logoutUser();
+        ResponseFormatter::success(null, "Sign out success");
     }
 }
