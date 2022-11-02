@@ -2,16 +2,22 @@
 
 namespace App\Helpers;
 
+use Exception;
 use Illuminate\Support\Facades\File;
 
 class handleFile
 {
     public static function renameFile($request, $lastPath)
     {
-        return [
-            "filename" => time().rand(1111,9999).".".$request[$lastPath]->extension(),
-            "path" => "storage\image\\".$lastPath
-        ];
+        try {
+            return [
+                "filename" => time().rand(1111,9999).".".$request[$lastPath]->extension(),
+                "path" => "storage\image\\".$lastPath
+            ];
+        } catch (Exception $th) {
+            throw ResponseFormatter::throwErr($th, "renameFile");
+        }
+
     }
 
     public static function addFile($request, $lastPath)
@@ -22,8 +28,8 @@ class handleFile
                 $request[$lastPath]->move($name["path"], $name["filename"]);
                 return $name["path"]."\\".$name["filename"];
             }
-        } catch (\Throwable $th) {
-            throw ResponseFormatter::throwErr("addFile Error!");
+        } catch (Exception $th) {
+            throw ResponseFormatter::throwErr($th, "addFile");
         }
     }
 
@@ -34,8 +40,8 @@ class handleFile
             $name = self::renameFile($request, $lastPath);
             $request[$lastPath]->move($name["path"], $name["filename"]);
             return $name["path"]."\\".$name["filename"];
-        } catch (\Exception $th) {
-            return ResponseFormatter::throwErr("update file was wrong!");
+        } catch (Exception $th) {
+            throw ResponseFormatter::throwErr($th, "updateFile");
         }
     }
 }
