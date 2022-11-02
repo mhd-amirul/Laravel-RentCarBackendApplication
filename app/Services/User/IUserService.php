@@ -9,4 +9,5 @@ interface IUserService {
     public function checkPassword($user, $request);
     public function sendMail($user, $otp);
     public function saveUser($user);
+    public function logoutUser();
 }
