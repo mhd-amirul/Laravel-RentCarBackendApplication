@@ -27,28 +27,27 @@ Route::controller(authentikasiController::class)->group(function ()
         Route::post('signin', 'login');
     }
 );
-Route::middleware(['auth:sanctum'])->group(function () {
-    Route::middleware(['emailVerified'])->group(function () {
-        Route::group(['prefix' => 'profile'], function ()
-            {
-                Route::controller(storeController::class)->group(function ()
-                {
-                        Route::middleware('userAgreement')->group(function () {
-                            Route::post('update-store', 'updateStore');
-                        });
-                        Route::post('create-store', 'registerStore');
-                        Route::post('agreement', 'agreementStore');
-                    }
-                );
-                Route::controller(profileController::class)->group(function ()
-                    {
-                        Route::get('/', 'profil');
-                        Route::put('update', 'edit');
-                        Route::put('resetpass', 'resetPassword');
-                    }
-                );
-            }
-        );
+
+Route::middleware(["auth:sanctum"])->group(function ()
+{
+    Route::middleware(["emailVerified"])->group(function ()
+    {
+        Route::controller(profileController::class)->prefix("profile")->group(function ()
+        {
+            Route::get('/', 'profil');
+            Route::put('update', 'edit');
+            Route::put('resetpass', 'resetPassword');
+        });
+
+        Route::controller(storeController::class)->prefix("store")->group(function ()
+        {
+            Route::middleware('userAgreement')->group(function () {
+                Route::post('update-store', 'updateStore');
+                Route::post('delete-store', 'deleteStore');
+            });
+            Route::post('create-store', 'registerStore');
+            Route::post('agreement', 'agreementStore');
+        });
     });
     Route::controller(authentikasiController::class)->group(function ()
         {
