@@ -21,22 +21,39 @@ use Illuminate\Support\Facades\Route;
 //     return $request->user();
 // });
 
-Route::group([], function ()
+Route::controller(authentikasiController::class)->group(function ()
     {
-        Route::post('signup',[authentikasiController::class, 'register']);
-        Route::post('signin',[authentikasiController::class, 'login']);
-        Route::post('verify',[authentikasiController::class, 'verifyEmail']);
+        Route::post('signup', 'register');
+        Route::post('signin', 'login');
     }
 );
-Route::middleware(['auth:sanctum', 'emailVerified'])->group(function () {
-    Route::group(['prefix' => 'profile'], function ()
+Route::middleware(['auth:sanctum'])->group(function () {
+    Route::middleware(['emailVerified'])->group(function () {
+        Route::group(['prefix' => 'profile'], function ()
+            {
+                Route::controller(storeController::class)->group(function ()
+                {
+                        Route::middleware('userAgreement')->group(function () {
+                            Route::post('update-store', 'updateStore');
+                        });
+                        Route::post('create-store', 'registerStore');
+                        Route::post('agreement', 'agreementStore');
+                    }
+                );
+                Route::controller(profileController::class)->group(function ()
+                    {
+                        Route::get('/', 'profil');
+                        Route::put('update', 'edit');
+                        Route::put('resetpass', 'resetPassword');
+                    }
+                );
+            }
+        );
+    });
+    Route::controller(authentikasiController::class)->group(function ()
         {
-            Route::get('/',[profileController::class, 'profil']);
-            Route::put('update',[profileController::class, 'edit']);
-            Route::put('resetpass',[profileController::class, 'resetPassword']);
-            Route::post('create-store',[storeController::class, 'registerStore']);
-            Route::post('update-store',[storeController::class, 'updateStore']);
-            Route::post('agreement',[storeController::class, 'agreementStore']);
+            Route::post('verify','verifyEmail');
+            Route::post('signout', 'logout');
         }
     );
 });
