@@ -7,6 +7,7 @@ use App\Helpers\handleFile;
 use App\Helpers\ResponseFormatter;
 use App\Repository\Store\IStoreRepository;
 use App\Services\Store\IStoreService;
+use Exception;
 
 class StoreService implements IStoreService
 {
@@ -20,8 +21,8 @@ class StoreService implements IStoreService
     {
         try {
             return $this->storeRepository->where($user);
-        } catch (\Throwable $th) {
-            return ResponseFormatter::throwErr($th, "whereStore");
+        } catch (Exception $th) {
+            throw ResponseFormatter::throwErr($th, "whereStore");
         }
     }
 
@@ -46,7 +47,7 @@ class StoreService implements IStoreService
                 "province" => $data["province"]
             ];
             return $this->storeRepository->create($data);
-        } catch (\Exception $th) {
+        } catch (Exception $th) {
             throw ResponseFormatter::throwErr($th, "createStore");
         }
     }
@@ -87,8 +88,8 @@ class StoreService implements IStoreService
                 $data["address"]["province"] = $request->province;
             }
             return $this->storeRepository->update($store, $data);
-        } catch (\Exception $th) {
-            return ResponseFormatter::throwErr($th, "updateStore");
+        } catch (Exception $th) {
+            throw ResponseFormatter::throwErr($th, "updateStore");
         }
     }
 
@@ -96,7 +97,7 @@ class StoreService implements IStoreService
     {
         try {
             return $this->storeRepository->save($store);
-        } catch (\Exception $th) {
+        } catch (Exception $th) {
             throw ResponseFormatter::throwErr($th, "saveStore");
         }
     }
