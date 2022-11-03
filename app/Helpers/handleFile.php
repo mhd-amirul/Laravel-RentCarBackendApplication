@@ -7,12 +7,12 @@ use Illuminate\Support\Facades\File;
 
 class handleFile
 {
-    public static function renameFile($request, $lastPath)
+    public static function renameFile($request, $lastPath, $type)
     {
         try {
             return [
                 "filename" => time().rand(1111,9999).".".$request[$lastPath]->extension(),
-                "path" => "storage\image\\".$lastPath
+                "path" => "storage\\".$type."\\".$lastPath
             ];
         } catch (Exception $th) {
             throw ResponseFormatter::throwErr($th, "renameFile");
@@ -20,11 +20,11 @@ class handleFile
 
     }
 
-    public static function addFile($request, $lastPath)
+    public static function addFile($request, $lastPath, $type = "image")
     {
         try {
             if ($request->has($lastPath)) {
-                $name = self::renameFile($request, $lastPath);
+                $name = self::renameFile($request, $lastPath, $type);
                 $request[$lastPath]->move($name["path"], $name["filename"]);
                 return $name["path"]."\\".$name["filename"];
             }
@@ -33,13 +33,23 @@ class handleFile
         }
     }
 
-    public static function updateFile($request, $lastPath, $store)
+    public static function updateFile($request, $lastPath, $store, $type = "image")
     {
         try {
-            if ($store->ktp) { File::delete($store->ktp); }
-            $name = self::renameFile($request, $lastPath);
+            if ($store[$lastPath]) { File::delete($store[$lastPath]); }
+            $name = self::renameFile($request, $lastPath, $type);
             $request[$lastPath]->move($name["path"], $name["filename"]);
             return $name["path"]."\\".$name["filename"];
+        } catch (Exception $th) {
+            throw ResponseFormatter::throwErr($th, "updateFile");
+        }
+    }
+
+    public static function deleteFile($lastPath, $store)
+    {
+        try {
+            File::delete($store[$lastPath]);
+            return true;
         } catch (Exception $th) {
             throw ResponseFormatter::throwErr($th, "updateFile");
         }
