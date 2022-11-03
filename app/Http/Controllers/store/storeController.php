@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\store;
 
+use App\Helpers\handleFile;
 use App\Helpers\ResponseFormatter;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\storeRequest;
@@ -35,7 +36,6 @@ class storeController extends Controller
         # make user to agree with app condition and term
         $store = $this->storeService->whereStore(auth()->user()->email);
         $userAgreement = $this->userAgreementService->whereUserAgreement(auth()->user()->email);
-        return response()->json($userAgreement);
         if ($store) {
             if (!$userAgreement) {
                 $newuserAgreement = $this->userAgreementService->createUserAgreement($request);
@@ -55,5 +55,27 @@ class storeController extends Controller
         $store = $this->storeService->whereStore(auth()->user()->email);
         $newStore = $this->storeService->updateStore($store, $request);
         return ResponseFormatter::success([$newStore]);
+    }
+
+    public function deleteStore()
+    {
+        $store = $this->storeService->whereStore(auth()->user()->email);
+        $agreement = $this->userAgreementService->whereUserAgreement(auth()->user()->email);
+        $store->ktp ? handleFile::deleteFile("ktp", $store) : null;
+        // if ($store->ktp) {
+        //     handleFile::deleteFile("ktp", $store);
+        // }
+        if ($store->siu) {
+            handleFile::deleteFile("siu", $store);
+        }
+        if ($store->img_owner) {
+            handleFile::deleteFile("img_owner", $store);
+        }
+        if ($store->img_store) {
+            handleFile::deleteFile("img_store", $store);
+        }
+        // $store->delete();
+        // $userAgreement->delete();
+        return ResponseFormatter::success([$agreement, $store], "the store has been deleted!");
     }
 }
