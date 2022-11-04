@@ -36,4 +36,13 @@ class UserAgreementService implements IUserAgreementService
             throw ResponseFormatter::throwErr($th, "createUserAgreement");
         }
     }
+
+    public function deleteUserAgreement()
+    {
+        try {
+            return $this->userAgreementRepository->delete();
+        } catch (Exception $th) {
+            return ResponseFormatter::throwErr($th, "deleteUserAgreement");
+        }
+    }
 }
