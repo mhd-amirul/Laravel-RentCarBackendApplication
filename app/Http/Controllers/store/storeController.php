@@ -60,22 +60,13 @@ class storeController extends Controller
     public function deleteStore()
     {
         $store = $this->storeService->whereStore(auth()->user()->email);
-        $agreement = $this->userAgreementService->whereUserAgreement(auth()->user()->email);
         $store->ktp ? handleFile::deleteFile("ktp", $store) : null;
-        // if ($store->ktp) {
-        //     handleFile::deleteFile("ktp", $store);
-        // }
-        if ($store->siu) {
-            handleFile::deleteFile("siu", $store);
-        }
-        if ($store->img_owner) {
-            handleFile::deleteFile("img_owner", $store);
-        }
-        if ($store->img_store) {
-            handleFile::deleteFile("img_store", $store);
-        }
-        // $store->delete();
+        $store->siu ? handleFile::deleteFile("siu", $store) : null;
+        $store->img_owner ? handleFile::deleteFile("img_owner", $store) : null;
+        $store->img_store ? handleFile::deleteFile("img_store", $store) : null;
+        $this->userAgreementService->deleteUserAgreement();
         // $userAgreement->delete();
-        return ResponseFormatter::success([$agreement, $store], "the store has been deleted!");
+        // $store->delete();
+        return ResponseFormatter::success(null, "the store has been deleted!");
     }
 }
