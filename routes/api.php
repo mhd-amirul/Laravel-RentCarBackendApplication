@@ -43,7 +43,7 @@ Route::middleware(["auth:sanctum"])->group(function ()
         {
             Route::middleware('userAgreement')->group(function () {
                 Route::post('update-store', 'updateStore');
-                Route::post('delete-store', 'deleteStore');
+                Route::delete('delete-store', 'deleteStore');
             });
             Route::post('create-store', 'registerStore');
             Route::post('agreement', 'agreementStore');
