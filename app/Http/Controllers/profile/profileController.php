@@ -24,15 +24,9 @@ class profileController extends Controller
     {
         $user = $this->userService->whereUser(auth()->user()->email);
         if ($user) {
-            return response()->json([
-                "status" => "OK",
-                "data" => $user
-            ], 200);
+            return ResponseFormatter::success($user);
         } else {
-            return response()->json([
-                "status" => "NOT_FOUND",
-                "message" => "user not found"
-            ]);
+            return ResponseFormatter::error(null, "user not found!", 404);
         }
     }
 
