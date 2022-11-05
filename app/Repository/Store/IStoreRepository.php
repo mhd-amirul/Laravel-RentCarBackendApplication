@@ -7,4 +7,5 @@ interface IStoreRepository {
     public function where($user);
     public function update($store, $data);
     public function save($store);
+    public function delete();
 }
