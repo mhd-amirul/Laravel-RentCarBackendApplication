@@ -101,4 +101,13 @@ class StoreService implements IStoreService
             throw ResponseFormatter::throwErr($th, "saveStore");
         }
     }
+
+    public function deleteStore()
+    {
+        try {
+            return $this->storeRepository->delete();
+        } catch (Exception $th) {
+            return ResponseFormatter::throwErr($th, "deleteStore");
+        }
+    }
 }
