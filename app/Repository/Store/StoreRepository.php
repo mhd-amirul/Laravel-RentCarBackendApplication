@@ -33,4 +33,10 @@ class StoreRepository implements IStoreRepository
     {
         return $store->save();
     }
+
+    public function delete()
+    {
+        $this->store = $this->where(auth()->user()->email);
+        return $this->store->delete();
+    }
 }
