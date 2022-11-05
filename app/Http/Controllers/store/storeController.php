@@ -27,7 +27,12 @@ class storeController extends Controller
 
     public function registerStore(storeRequest $request)
     {
-        $store = $this->storeService->createStore($request);
+        $store = $this->storeService->whereStore(auth()->user()->email);
+        if ($store) {
+            return ResponseFormatter::error($store, "you already have a store");
+        } else {
+            $store = $this->storeService->createStore($request);
+        }
         return ResponseFormatter::success($store, "Store has been registered!");
     }
 
@@ -65,8 +70,7 @@ class storeController extends Controller
         $store->img_owner ? handleFile::deleteFile("img_owner", $store) : null;
         $store->img_store ? handleFile::deleteFile("img_store", $store) : null;
         $this->userAgreementService->deleteUserAgreement();
-        // $userAgreement->delete();
-        // $store->delete();
+        $this->storeService->deleteStore();
         return ResponseFormatter::success(null, "the store has been deleted!");
     }
 }
