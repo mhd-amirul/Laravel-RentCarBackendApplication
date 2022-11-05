@@ -7,5 +7,5 @@ interface IStoreService {
     public function whereStore($user);
     public function updateStore($store, $data);
     public function saveStore($store);
-    // public function renameFileandPath();
+    public function deleteStore();
 }
