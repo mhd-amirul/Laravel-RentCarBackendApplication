@@ -18,9 +18,10 @@ class StoreRepository implements IStoreRepository
         return $this->store->create($data);
     }
 
-    public function where($user)
+    public function whereOne($id)
     {
-        return $this->store->where('user', 'exists', ['email', $user])->first();
+        // return $this->store->where('user', 'exists', ['_id', $id])->first();
+        return $this->store->where('user_id', $id)->first();
     }
 
     public function update($store, $data)
@@ -34,9 +35,8 @@ class StoreRepository implements IStoreRepository
         return $store->save();
     }
 
-    public function delete()
+    public function delete($store)
     {
-        $this->store = $this->where(auth()->user()->email);
-        return $this->store->delete();
+        return $store->delete();
     }
 }
