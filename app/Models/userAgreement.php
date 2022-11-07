@@ -11,7 +11,8 @@ class userAgreement extends Model
     protected $connection = 'mongodb';
     protected $collection = 'user_agreements';
     protected $fillable = [
-        "user",
+        "user_id",
+        "store_id",
         "status",
         "description"
     ];
