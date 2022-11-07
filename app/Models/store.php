@@ -14,17 +14,17 @@ class store extends Model
     protected $collection = 'stores';
 
     protected $fillable = [
+        "user_id",
         "slug",
         "status",
         "name",
         "owner",
         "nik",
-        "user",
-        "address",
-        "coordinate",
         "ktp",
         "siu",
         "img_owner",
         "img_store",
+        "address",
+        "coordinate",
     ];
 }
