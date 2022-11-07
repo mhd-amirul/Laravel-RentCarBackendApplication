@@ -15,10 +15,10 @@ return new class extends Migration
     {
         Schema::create('stores', function (Blueprint $table) {
             $table->string("slug")->unique();
+            $table->string("user_id");
             $table->string("name");
             $table->string("owner");
             $table->bigInteger("nik")->unique();
-            $table->string("user");
             $table->string("address");
             $table->string("coordinate");
             $table->string("ktp")->nullable();
