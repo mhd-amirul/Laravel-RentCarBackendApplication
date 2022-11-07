@@ -17,10 +17,10 @@ class StoreService implements IStoreService
         return $this->storeRepository = $storeRepository;
     }
 
-    public function whereStore($user)
+    public function whereStoreOne()
     {
         try {
-            return $this->storeRepository->where($user);
+            return $this->storeRepository->whereOne(auth()->user()->_id);
         } catch (Exception $th) {
             throw ResponseFormatter::throwErr($th, "whereStore");
         }
@@ -30,13 +30,13 @@ class StoreService implements IStoreService
     {
         try {
             $data = $request->all();
+            $data["user_id"] = auth()->user()->_id;
+            $data["slug"] = time() . rand(11111, 99999) . auth()->user()->_email;
+            $data["status"] = "review";
             $data["ktp"] = handleFile::addFile($request,"ktp");
             $data["siu"] = handleFile::addFile($request,"siu");
             $data["img_owner"] = handleFile::addFile($request,"img_owner");
             $data["img_store"] = handleFile::addFile($request,"img_store");
-            $data["user"] = arrNested::userInformation(auth()->user());
-            $data["slug"] = time() . rand(11111, 99999) . $data["user"]["email"];
-            $data["status"] = "review";
             $data["coordinate"] = [
                 "latitude" => $data["latitude"],
                 "longitude" => $data["longitude"]
@@ -102,10 +102,10 @@ class StoreService implements IStoreService
         }
     }
 
-    public function deleteStore()
+    public function deleteStore($store)
     {
         try {
-            return $this->storeRepository->delete();
+            return $this->storeRepository->delete($store);
         } catch (Exception $th) {
             return ResponseFormatter::throwErr($th, "deleteStore");
         }
