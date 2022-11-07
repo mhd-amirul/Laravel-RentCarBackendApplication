@@ -37,8 +37,7 @@ class ResponseFormatter
     {
         return ValidationException::withMessages(
             [
-                "message" => "internal error(".$status.")",
-                "errors" => $message
+                $message
             ]
         );
     }
