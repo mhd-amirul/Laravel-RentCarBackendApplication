@@ -14,7 +14,8 @@ return new class extends Migration
     public function up()
     {
         Schema::create('user_agreements', function (Blueprint $table) {
-            $table->string("user");
+            $table->string("user_id");
+            $table->string("store_id");
             $table->string("status");
             $table->timestamps();
         });
