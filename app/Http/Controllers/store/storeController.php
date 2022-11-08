@@ -27,7 +27,7 @@ class storeController extends Controller
 
     public function registerStore(storeRequest $request)
     {
-        $store = $this->storeService->whereStore(auth()->user()->email);
+        $store = $this->storeService->whereStoreOne();
         if ($store) {
             return ResponseFormatter::error($store, "you already have a store");
         } else {
@@ -39,11 +39,11 @@ class storeController extends Controller
     public function agreementStore(userAgreementRequest $request)
     {
         # make user to agree with app condition and term
-        $store = $this->storeService->whereStore(auth()->user()->email);
-        $userAgreement = $this->userAgreementService->whereUserAgreement(auth()->user()->email);
+        $store = $this->storeService->whereStoreOne();
         if ($store) {
+            $userAgreement = $this->userAgreementService->whereUserAgreementOne($store["_id"], $store["user_id"]);
             if (!$userAgreement) {
-                $newuserAgreement = $this->userAgreementService->createUserAgreement($request);
+                $newuserAgreement = $this->userAgreementService->createUserAgreement($request, $store);
                 if ($newuserAgreement) {
                     $store["status"] = 1;
                     $this->storeService->saveStore($store);
@@ -57,20 +57,20 @@ class storeController extends Controller
 
     public function updateStore(updateStoreRequest $request)
     {
-        $store = $this->storeService->whereStore(auth()->user()->email);
+        $store = $this->storeService->whereStoreOne();
         $newStore = $this->storeService->updateStore($store, $request);
-        return ResponseFormatter::success([$newStore]);
+        return ResponseFormatter::success($newStore, "the store has been updated!");
     }
 
     public function deleteStore()
     {
-        $store = $this->storeService->whereStore(auth()->user()->email);
+        $store = $this->storeService->whereStoreOne();
         $store->ktp ? handleFile::deleteFile("ktp", $store) : null;
         $store->siu ? handleFile::deleteFile("siu", $store) : null;
         $store->img_owner ? handleFile::deleteFile("img_owner", $store) : null;
         $store->img_store ? handleFile::deleteFile("img_store", $store) : null;
-        $this->userAgreementService->deleteUserAgreement();
-        $this->storeService->deleteStore();
+        $this->userAgreementService->deleteUserAgreement($store);
+        $this->storeService->deleteStore($store);
         return ResponseFormatter::success(null, "the store has been deleted!");
     }
 }
