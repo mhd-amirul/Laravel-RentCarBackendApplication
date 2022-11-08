@@ -18,7 +18,8 @@ class userAgreement
      */
     public function handle(Request $request, Closure $next)
     {
-        $userAgreement = ModelsUserAgreement::where("user", "exists", ["email" => auth()->user()->email])->first();
+        // $userAgreement = ModelsUserAgreement::where("user", "exists", ["email" => auth()->user()->email])->first();
+        $userAgreement = ModelsUserAgreement::where("user_id", auth()->user()->_id)->first();
         if ($userAgreement != null) {
             return $next($request);
         }
