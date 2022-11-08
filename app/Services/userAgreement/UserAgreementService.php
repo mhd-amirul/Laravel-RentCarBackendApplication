@@ -15,20 +15,21 @@ class UserAgreementService implements IUserAgreementService
         return $this->userAgreementRepository = $userAgreementRepository;
     }
 
-    public function whereUserAgreement($request)
+    public function whereUserAgreementOne($store, $user)
     {
         try {
-            return $this->userAgreementRepository->where($request);
+            return $this->userAgreementRepository->whereOne($store, $user);
         } catch (Exception $th) {
             throw ResponseFormatter::throwErr($th, "whereUserAgreement");
         }
     }
 
-    public function createUserAgreement($request)
+    public function createUserAgreement($request, $store)
     {
         try {
             $data = $request->all();
-            $data["user"] = arrNested::userInformation(auth()->user());
+            $data["user_id"] = $store["user_id"];
+            $data["store_id"] = $store["_id"];
             $data["status"] = $request->status;
             $data["description"] = "this user agree with our condition and term";
             return $this->userAgreementRepository->create($data);
@@ -37,10 +38,11 @@ class UserAgreementService implements IUserAgreementService
         }
     }
 
-    public function deleteUserAgreement()
+    public function deleteUserAgreement($store)
     {
         try {
-            return $this->userAgreementRepository->delete();
+            $userAgreement = $this->userAgreementRepository->whereOne($store["_id"], $store["user_id"]);
+            return $this->userAgreementRepository->delete($userAgreement);
         } catch (Exception $th) {
             return ResponseFormatter::throwErr($th, "deleteUserAgreement");
         }
