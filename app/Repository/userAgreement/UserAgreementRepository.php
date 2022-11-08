@@ -19,14 +19,18 @@ class UserAgreementRepository implements IUserAgreementRepository
         return $this->userAgreement->create($data);
     }
 
-    public function where($data)
+    public function whereOne($store, $user)
     {
-        return $this->userAgreement->where("user", "exists", ["email", $data])->first();
+        // return $this->userAgreement->where("user", "exists", ["email", $email])->first();
+        return $this->userAgreement->where(
+        [
+            "store_id" => $store,
+            "user_id" => $user
+        ])->first();
     }
 
-    public function delete()
+    public function delete($userAgreement)
     {
-        $this->userAgreement = $this->where(auth()->user()->email);
-        return $this->userAgreement->delete();
+        return $userAgreement->delete();
     }
 }
