@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\auth\authentikasiController;
 use App\Http\Controllers\profile\profileController;
+use App\Http\Controllers\store\carController;
 use App\Http\Controllers\store\storeController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -55,4 +56,6 @@ Route::middleware(["auth:sanctum"])->group(function ()
             Route::post('signout', 'logout');
         }
     );
+    Route::post('car', [carController::class, "addCar"]);
 });
+
