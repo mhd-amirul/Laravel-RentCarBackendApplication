@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers\store;
 
+use App\Helpers\handleFile;
 use App\Helpers\ResponseFormatter;
 use App\Http\Controllers\Controller;
+use App\Models\car;
 use App\Models\store;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -34,6 +36,8 @@ class carController extends Controller
         if ($val->fails()) {
             return response()->json($val->errors());
         }
+        $data["image1"] = handleFile::addFile($request, "image1", "car");
+        $data = car::create($data);
         return ResponseFormatter::success($data);
     }
 }
