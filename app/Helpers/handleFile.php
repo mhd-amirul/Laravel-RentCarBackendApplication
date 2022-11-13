@@ -20,7 +20,7 @@ class handleFile
 
     }
 
-    public static function addFile($request, $lastPath, $type = "image")
+    public static function addFile($request, $lastPath, $type = "shop")
     {
         try {
             if ($request->has($lastPath)) {
