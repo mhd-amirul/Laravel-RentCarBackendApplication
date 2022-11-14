@@ -31,7 +31,7 @@ class StoreService implements IStoreService
         try {
             $data = $request->all();
             $data["user_id"] = auth()->user()->_id;
-            $data["slug"] = time() . rand(11111, 99999) . auth()->user()->_email;
+            $data["slug"] = time() . rand(11111, 99999) . auth()->user()->email;
             $data["status"] = "review";
             $data["ktp"] = handleFile::addFile($request,"ktp");
             $data["siu"] = handleFile::addFile($request,"siu");
