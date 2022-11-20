@@ -24,8 +24,8 @@ use Illuminate\Support\Facades\Route;
 
 Route::controller(authentikasiController::class)->group(function ()
     {
-        Route::post('signup', 'register');
-        Route::post('signin', 'login');
+        Route::post("signup", "register");
+        Route::post("signin", "login");
     }
 );
 
@@ -35,27 +35,33 @@ Route::middleware(["auth:sanctum"])->group(function ()
     {
         Route::controller(profileController::class)->prefix("profile")->group(function ()
         {
-            Route::get('/', 'profil');
-            Route::put('update', 'edit');
-            Route::put('resetpass', 'resetPassword');
+            Route::get("/", "profil");
+            Route::put("update", "edit");
+            Route::put("resetpass", "resetPassword");
         });
 
         Route::controller(storeController::class)->prefix("store")->group(function ()
         {
-            Route::middleware('userAgreement')->group(function () {
-                Route::post('update-store', 'updateStore');
-                Route::delete('delete-store', 'deleteStore');
+            Route::middleware("userAgreement")->group(function () {
+                Route::post("update-store", "updateStore");
+                Route::delete("delete-store", "deleteStore");
             });
-            Route::post('create-store', 'registerStore');
-            Route::post('agreement', 'agreementStore');
+            Route::post("create-store", "registerStore");
+            Route::post("agreement", "agreementStore");
+        });
+        Route::controller(carController::class)->group(function ()
+        {
+            Route::middleware("userAgreement")->group(function ()
+            {
+                Route::post("car", "addCar");
+            });
         });
     });
     Route::controller(authentikasiController::class)->group(function ()
         {
-            Route::post('verify','verifyEmail');
-            Route::post('signout', 'logout');
+            Route::post("verify","verifyEmail");
+            Route::post("signout", "logout");
         }
     );
-    Route::post('car', [carController::class, "addCar"]);
 });
 
