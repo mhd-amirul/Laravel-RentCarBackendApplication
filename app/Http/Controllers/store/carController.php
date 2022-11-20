@@ -14,14 +14,29 @@ use Illuminate\Support\Facades\Validator;
 
 class carController extends Controller
 {
+    public function getCar()
+    {
+        # code...
+    }
+
     public function addCar(addCarRequest $request)
     {
         $store = store::where("user_id", auth()->user()->_id)->first();
         $data = $request->all();
         $data["image1"] = handleFile::addFile($request, "image1", "car");
-        $data["slug"] = time() . rand(11111, 99999) . $data["brand"];
+        $data["slug"] = time() . rand(11111, 99999) . str_replace(" ", "", $store["name"]);
         $data["shop_id"] = $store->id;
         $data = car::create($data);
         return ResponseFormatter::success($data);
+    }
+
+    public function updateCar()
+    {
+        # code...
+    }
+
+    public function deleteCar()
+    {
+        # code...
     }
 }
