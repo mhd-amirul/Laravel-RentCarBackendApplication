@@ -6,6 +6,7 @@ use App\Helpers\handleFile;
 use App\Helpers\ResponseFormatter;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\addCarRequest;
+use App\Http\Requests\updateCarRequest;
 use App\Models\car;
 use App\Models\store;
 use App\Models\User;
@@ -30,9 +31,15 @@ class carController extends Controller
         return ResponseFormatter::success($data);
     }
 
-    public function updateCar()
+    public function updateCar(updateCarRequest $request)
     {
-        # code...
+        $db = car::where("_id", $request->car_id)->first();
+        $data = $request->all();
+        if ($request->has("image1")) {
+            $data["image1"] = handleFile::updateFile($request, "image1", $db);
+        }
+        $db->update($data);
+        return ResponseFormatter::success($db, "the car has been updated");
     }
 
     public function deleteCar()
